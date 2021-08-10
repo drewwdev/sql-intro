@@ -1,6 +1,6 @@
 createdb CompanyDatabase
 
-CREATE TABLE "Employees" ("FullName" TEXT NOT NULL, "Salary" INT NOT NULL, "JobPosition" TEXT NOT NULL, "PhoneExtension" INT, "IsPartTime" BOOLEAN NOT NULL);
+CREATE TABLE "Employees" ("FullName" TEXT, "Salary" INT, "JobPosition" TEXT, "PhoneExtension" INT, "IsPartTime" BOOLEAN);
 
 INSERT INTO "Employees" ("FullName",  "Salary", "JobPosition", "PhoneExtension", "IsPartTime")
 VALUES ('Drew Wilson', '100000', 'The Boss', '100', false);
@@ -43,4 +43,20 @@ UPDATE "Employees" SET "Salary" = '500' WHERE "JobPosition" = 'Cook';
 
 ALTER TABLE "Employees" ADD COLUMN "ParkingSpot" VARCHAR(10);
 
+Adventure mode:
+
+ALTER TABLE "Employees" ALTER COLUMN "FullName" SET NOT NULL;
+
+ALTER TABLE "Employees" ALTER COLUMN "Salary" SET NOT NULL;
+
+ALTER TABLE "Employees" ALTER COLUMN "JobPosition" SET NOT NULL;
+
+ALTER TABLE "Employees" ALTER COLUMN "IsPartTime" SET NOT NULL;
+
 ALTER TABLE "Employees" ADD COLUMN "Id" SERIAL PRIMARY KEY;
+
+Epic Mode:
+
+CREATE TABLE "Departments" ("Name"  TEXT, "BuildingNumber"  INT);
+
+ALTER TABLE "Employees" ADD COLUMN "DepartmentId" INTEGER NULL REFERENCES "Departments" ("Id");
