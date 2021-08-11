@@ -60,3 +60,75 @@ Epic Mode:
 CREATE TABLE "Departments" ("Name"  TEXT, "BuildingNumber"  INT);
 
 ALTER TABLE "Employees" ADD COLUMN "DepartmentId" INTEGER NULL REFERENCES "Departments" ("Id");
+
+04-03 - Foreign Keys - The SQL
+
+Explorer Mode:
+
+DROP TABLE "Departments";
+
+CREATE TABLE "Departments" (  "Id" SERIAL PRIMARY KEY,  "DepartmentName"  TEXT, "Building" TEXT);
+
+ALTER TABLE "Employees" ADD COLUMN "DepartmentId" INT NULL REFERENCES "Departments";
+
+CREATE TABLE "Products" ("Id" SERIAL PRIMARY KEY, "Price" NUMERIC, "Name" TEXT, "Description" TEXT, "QuantityInStock" INT);
+
+CREATE TABLE "Orders" ("Id" SERIAL PRIMARY KEY, "OrderNumber" TEXT, "DatePlaced" TIMESTAMP, "Email" TEXT);
+
+CREATE TABLE "ProductOrders" ("Product" INT REFERENCES "Products" ("Id"), "Order" INT REFERENCES "Orders" ("Id"), "OrderQuantity" INT);
+
+SELECT "ProductOrders"."OrderQuantity" FROM "ProductOrders";
+
+SELECT "ProductOrders"."OrderQuantity" FROM "ProductOrders" JOIN "Orders" ON "ProductOrders"."Order" = "Orders"."Id" 
+JOIN "Products" ON "ProductOrders"."Product" = "Products"."Id";
+
+INSERT INTO "Departments" ("DepartmentName", "Building")
+VALUES ('Development', 'Main');
+
+INSERT INTO "Departments" ("DepartmentName", "Building")
+VALUES ('Marketing', 'North');
+
+INSERT INTO "Employees" ("FullName",  "Salary", "JobPosition", "PhoneExtension", "IsPartTime", "DepartmentId")
+VALUES ('Tim Smith', '40000', 'Programmer', '123', false, '1');
+
+INSERT INTO "Employees" ("FullName",  "Salary", "JobPosition", "PhoneExtension", "IsPartTime", "DepartmentId")
+VALUES ('Barbara Ramsey', '80000', 'Manager', '234', false, '1');
+
+INSERT INTO "Employees" ("FullName",  "Salary", "JobPosition", "PhoneExtension", "IsPartTime", "DepartmentId")
+VALUES ('Tom Jones', '32000', 'Admin', '456', true, '2');
+
+INSERT INTO "Products" ("Price", "Name", "Description", "QuantityInStock")
+VALUES ('12.45', 'Widget', 'The Original Widget', '100');
+
+INSERT INTO "Products" ("Price", "Name", "Description", "QuantityInStock")
+VALUES ('99.99', 'Flowbee', 'Perfect for haircuts', '3');
+
+INSERT INTO "Orders" ("OrderNumber", "DatePlaced", "Email")
+VALUES ('X529', '2020-01-01 04:55:00', 'person@example.com');
+
+INSERT INTO "ProductOrders" ("Product", "OrderQuantity", "Order")
+VALUES ('1', '3', '1');
+
+INSERT INTO "ProductOrders" ("Product", "OrderQuantity", "Order")
+VALUES ('2', '2', '1');
+
+SELECT "Departments"."Building", "Departments"."DepartmentName", "Employees"."FullName" FROM "Employees"
+JOIN "Departments" ON "Employees"."DepartmentId" = "Departments"."Id"
+WHERE "Departments"."Building" = 'North Side';
+
+SELECT "Departments"."Building", "Departments"."DepartmentName", "Employees"."FullName" FROM "Employees"
+JOIN "Departments" ON "Employees"."DepartmentId" = "Departments"."Id"
+WHERE "Departments"."Building" = 'Ease Side';
+
+SELECT "Departments"."Building", "Departments"."DepartmentName", "Employees"."FullName" FROM "Employees"
+JOIN "Departments" ON "Employees"."DepartmentId" = "Departments"."Id"
+WHERE "Departments"."Building" = 'North';
+
+SELECT "Products"."Id", "Orders"."OrderNumber", "ProductOrders"."OrderQuantity"
+FROM "Orders" JOIN "ProductOrders" ON "Orders"."Id" = "ProductOrders"."Order"
+JOIN "Products" ON "ProductOrders"."Product" = "Products"."Id" WHERE "ProductOrders"."Product" = 2;
+
+SELECT "ProductOrders"."OrderQuantity", "Orders"."OrderNumber", "Products"."Name"
+FROM "Orders" JOIN "ProductOrders" ON "Orders"."Id" = "ProductOrders"."Order"
+JOIN "Products" ON "ProductOrders"."Product" = "Products"."Id"
+WHERE ("Orders"."OrderNumber" = 'X529' AND "Products"."Name" = 'Flowbee');
